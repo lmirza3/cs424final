@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <meta charset="utf-8">
+		<title>Title</title>
+		<script src="https://d3js.org/d3.v4.js"></script>
+	</head>
+	<body>
+        <script type="text/javascript">
+        	d3.csv("cs424data-set.csv", function(dataAvg) {
+        		d3.csv("cs424data-pos.csv", function(dataSet) {
+
+        			//debug check dsv parse
+  					//console.log(dataSet);
+  					//console.log(dataAvg);
+
+  					//canvas
+	            	var width = 650,
+	            		height = 600;
+
+	            	//frequency sets
+	            	var freq700 = [],
+	            		freq850 = [],
+	            		freq1700 = [],
+	            		freq1900 = [];
+
+	            	for (var i=0 in dataSet){
+	           			freq700.push(parseInt(dataSet[i].f700));
+	           			freq850.push(parseInt(dataSet[i].f850));
+	           			freq1700.push(parseInt(dataSet[i].f1700));
+	           			freq1900.push(parseInt(dataSet[i].f1900));
+	           		}
+	           		//popping the end element, because object column gets parsed in
+	           		freq700.pop();
+	           		freq850.pop();
+	           		freq1700.pop();
+	           		freq1900.pop();
+
+	            	//debug check freq array
+	            	//console.log(freq700);
+	            	//console.log(freq850);
+
+	            	//edge decibels
+	            	var tmpArr = freq700.concat(freq850, freq1700, freq1900);
+	            	var maxDB = Math.max.apply(Math, tmpArr),
+	            		minDB = Math.min.apply(Math, tmpArr);
+	            	
+	            	//debug check tmp and min/max
+	            	//console.log(tmpArr);
+	            	//console.log(maxDB);
+	            	//console.log(minDB);
+
+
+
+	            	//set svg canvas
+	            	var canvas = d3.select("body").append("svg")
+	            		.attr("width", width)
+	            		.attr("height", height);
+
+
+
+				});
+			});
+        </script>
+	</body>
+</html>
