@@ -279,6 +279,8 @@
 						} // end reset
 
 						function handleMouseOver(d){
+                            d3.selectAll(".spin1").remove();
+
 							var transform = d3.select(this).attr("transform");
 							var comma = transform.indexOf(",");
 							var openP = transform.indexOf("(");
@@ -293,7 +295,6 @@
 						}
 
 						function handleMouseOut(){
-							d3.selectAll(".spin1").remove();
 
 						}
 
