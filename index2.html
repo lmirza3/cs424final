@@ -61,7 +61,13 @@
 		</style>
 	</head>
 	<body>
-
+		<p>
+      <label for="nRadius" 
+             style="display: inline-block; width: 100px; text-align: right">
+             Time: <span id="nRadius-value" style="width:200px" class = "royalSlider">…</span>
+      </label>
+      <input type="range" min="1" max="1262" step="1" id="nRadius">
+    </p>
 		<div id="map"></div>
 
 		<script>
@@ -78,6 +84,7 @@
 			}).addTo(map);
 
 			var svg = d3.select(map.getPanes().overlayPane).append("svg");
+			var bub = svg.append("bub");
 			var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
 
@@ -88,11 +95,23 @@
 					//console.log(dataSet);
 					//console.log(dataAvg);
 
-					//canvas
-					var width = 650,
-						height = 600,
-						cw = width/2,
-						ch = height/2;
+					var margin = {top: 40, right: 20, bottom: 30, left: 40},
+				    width = 960 - margin.left - margin.right,
+				    height = 500 - margin.top - margin.bottom;
+			    //spacing across screen
+			    var xx = d3.scaleBand()
+				    .range([0, width]);
+
+			    var yy = d3.scaleLinear()
+				    .range([height, 0]);
+
+			    var xAxis = d3.axisBottom(xx);
+			    var yAxis = d3.axisLeft(yy);
+
+			    var svg = d3.select("svg").append("bub")
+				    .attr("width", width + margin.left + margin.right)
+				    .attr("height", height + margin.top + margin.bottom)
+				    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 					//frequency sets
 					var freq700 = [],
@@ -121,12 +140,21 @@
 					var maxDB = Math.max.apply(Math, tmpArr),
 						minDB = Math.min.apply(Math, tmpArr);
 
+					var bubbleScale = d3.scaleLinear()
+            .domain([minDB, maxDB])
+            .range([10, 80])
+
 					//debug check tmp and min/max
 					//console.log(tmpArr);
 					//console.log(maxDB);
 					//console.log(minDB);
 
 					var pi = Math.PI;
+
+					svg.append("bub")
+				    .attr("class", "x axis") 
+				    .attr("transform", "translate(0," + height + ")")
+				    .call(xAxis); 
 
 
 					d3.json("location.geojson", function(collection) {
@@ -209,11 +237,13 @@
 
 							// console.log(d.geometry.coordinates[1]);
 
+							d3.selectAll(".spin1").remove();
+
 							sunburst(x, y, d.geometry.coordinates[1], d.geometry.coordinates[0]);
 						}
 
 						function handleMouseOut(){
-							d3.selectAll(".spin1").remove();
+							// d3.selectAll(".spin1").remove();
 
 						}
 
@@ -223,59 +253,59 @@
 						// console.log(y);
 						// console.log(lat);
 
-						var i = 0;
-						var avgInfo;
-						while(i < dataAvg.length){
-							//console.log(dataAvg[i]);
-							if(dataAvg[i].latitude == lat && dataAvg[i].longitude == long){
-								avgInfo = dataAvg[i];
-								break;
+							var i = 0;
+							var avgInfo;
+							while(i < dataAvg.length){
+								//console.log(dataAvg[i]);
+								if(dataAvg[i].latitude == lat && dataAvg[i].longitude == long){
+									avgInfo = dataAvg[i];
+									break;
+								}
+								i++;
 							}
-							i++;
-						}
-						// console.log(avgInfo);
+							// console.log(avgInfo);
 
-						//sunburst scale
-            var sunArcScale = d3.scaleLinear()
-            	.domain([minDB, maxDB])
-            	.range([30, 80])
+							//sunburst scale
+	            var sunArcScale = d3.scaleLinear()
+	            	.domain([minDB, maxDB])
+	            	.range([30, 80])
 
-						//set svg canvas
-        		// var canvas = d3.select("body").append("svg")
-            // 	.attr("width", width)
-            // 	.attr("height", height)
+							//set svg canvas
+	        		// var canvas = d3.select("body").append("svg")
+	            // 	.attr("width", width)
+	            // 	.attr("height", height)
 
-            // var group = canvas.append("g")
-      				// .attr("transform", "translate("+ x +","+ y +")");
+	            // var group = canvas.append("g")
+	      				// .attr("transform", "translate("+ x +","+ y +")");
 
 
-            // console.log(avgInfo.f700avg);
-            var tmpVal = {};
-            tmpVal[0] = {val: avgInfo.f700avg, color: "blue", speed: 5};
-            tmpVal[1] = {val: avgInfo.f850avg, color: "red", speed: 5};
-            tmpVal[2] = {val: avgInfo.f1700avg, color: "green", speed: 5};
-            tmpVal[3] = {val: avgInfo.f1900avg, color: "yellow", speed: 5};
-            // tmpVal[4] = {val: setInfo.f700, color: "blue", speed: 3};
-            // tmpVal[5] = {val: setInfo.f850, color: "red", speed: 3};
-            // tmpVal[6] = {val: setInfo.f1700, color: "green", speed: 3};
-            // tmpVal[7] = {val: setInfo.f1900, color: "yellow", speed: 3};
-         
-      			for (i=0; i < 4; i++){
+	            // console.log(avgInfo.f700avg);
+	            var tmpVal = {};
+	            tmpVal[0] = {val: avgInfo.f700avg, color: "blue", speed: 5};
+	            tmpVal[1] = {val: avgInfo.f850avg, color: "red", speed: 5};
+	            tmpVal[2] = {val: avgInfo.f1700avg, color: "green", speed: 5};
+	            tmpVal[3] = {val: avgInfo.f1900avg, color: "yellow", speed: 5};
+	            // tmpVal[4] = {val: setInfo.f700, color: "blue", speed: 3};
+	            // tmpVal[5] = {val: setInfo.f850, color: "red", speed: 3};
+	            // tmpVal[6] = {val: setInfo.f1700, color: "green", speed: 3};
+	            // tmpVal[7] = {val: setInfo.f1900, color: "yellow", speed: 3};
+	         
+	      			for (i=0; i < 4; i++){
 
-	            var arc = d3.arc()
-        				.innerRadius(30)
-        				.outerRadius((sunArcScale(tmpVal[i].val)))
-        				.startAngle(i * 90 * (pi/180))
-        				.endAngle((i+1) * 90 * (pi/180))
-        				.padAngle(5*(pi/180))
+		            var arc = d3.arc()
+	        				.innerRadius(30)
+	        				.outerRadius((sunArcScale(tmpVal[i].val)))
+	        				.startAngle(i * 90 * (pi/180))
+	        				.endAngle((i+1) * 90 * (pi/180))
+	        				.padAngle(5*(pi/180))
 
-							var drawArc = g.append("path")
-								.style("fill", tmpVal[i].color)
-								.style("opacity", .6)
-								.style("stroke", "none")
-								.attr("d", arc)
-								.attr("class", "spin1")
-								.attr("transform", "translate("+ x +","+ y +")");
+								var drawArc = g.append("path")
+									.style("fill", tmpVal[i].color)
+									.style("opacity", .6)
+									.style("stroke", "none")
+									.attr("d", arc)
+									.attr("class", "spin1")
+									.attr("transform", "translate("+ x +","+ y +")");
 							
 
 							
@@ -295,6 +325,66 @@
 							// 	});
 						});
 					}
+
+					var bubble = bub.selectAll(".circle")
+			      .enter().append("circle")
+			      .attr("class", "circle")
+			      .attr("cx", function(d) { return (x(d.time) + 55); }) 
+			      .attr("cy", height/5 ) 
+			      .attr("height", function(d) { return height - y(d["1"]) ; })
+			      .style("fill", colorize)
+
+			    d3.select("#nRadius").on("input", function() {
+           update(+this.value);
+          });
+
+          // update the elements
+          update(1);
+
+          function update(nRadius) {
+
+          	d3.select("#nRadius-value").text(nRadius);
+          	var r = d3.select("#nRadius").property("value", nRadius);
+
+          	var text = svg.selectAll("text").data(data);
+
+          	var objYr = 1;
+          	var objYr1 = objYr + 1;
+
+          	svg.selectAll(".circle") 
+          	.transition()
+          	.duration(200)
+             //.ease("circle")
+
+             .attr("r", function(d) { 
+             	for (i = 0; i <1263 ; i++)  {
+             		if (nRadius == i) {
+             			return (d[i]-69)
+             		}
+             	}        
+             })      
+
+             bub.selectAll("circles")
+	             .data(data)
+	             .enter()
+	             .append("text")
+	             .attr("x", function(d) { return (x(d.time) + 55); })
+	             .attr("y", function (d) { return height *0.0001 }) 
+	             .attr("text-anchor", "middle")
+	             .attr("font-family", "sans-serif")
+	             .attr("font-size", "12px")
+	             .attr("font-weight", "bold")
+	             .attr("fill", "black")
+	             .text(function(d)  {
+		           	for (i = 0; i < 1263; i++)  {
+		           		var theYears = objYr + i
+		             	if (nRadius == theYears)   {
+		             		return d.time + ", " + d[theYears];
+		             	}
+		            }
+	          })
+            text.exit().remove();
+	        }
 
 					});
 				});
