@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <meta charset="utf-8">
+		<title>Title</title>
+		<script src="https://d3js.org/d3.v4.js"></script>
+	</head>
+	<body>
+        <script type="text/javascript">
+        	d3.csv("cs424data-set.csv", function(dataAvg) {
+        		d3.csv("cs424data-pos.csv", function(dataSet) {
+
+
+  					console.log(dataSet);
+  					console.log(dataAvg);
+
+
+				});
+			});
+        </script>
+	</body>
+</html>
