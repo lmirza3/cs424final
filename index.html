@@ -117,17 +117,12 @@
 							.data(collection.features)
 							.enter()
 							.append("circle")
-							.attr("r", 5)
-							.style("fill", "red")
-							.style("opacity", "1")
+							.attr("r", 2)
+							.style("fill", "#88b281")
+							.style("opacity", ".7")
 							//.attr("class", "waypoints");
 							.on("mouseover", handleMouseOver)
 							.on("mouseout", handleMouseOut);
-
-						var marker = g.append("circle")
-							.attr("r", 10)
-							.attr("id", "marker")
-							.attr("class", "travelMarker");
 
 						map.on("viewreset", reset);
 
