@@ -19,6 +19,17 @@
         stroke-opacity: 1;
     }
 
+    .waypoints {
+        fill: red;
+        opacity: 1;
+    }
+
+    .lineConnect {
+      fill: none;
+      stroke: black;
+      opacity: 1;
+    }
+
     .travelMarker {
         fill: yellow;
         opacity: 0.75;
@@ -48,31 +59,26 @@
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
       d3.json("location.geojson", function(collection) {
-      var transform = d3.geo.transform({
+
+      var transform = d3.geoTransform({
         point: projectPoint
       });
 
-      var d3path = d3.geo.path().projection(transform);
+      var d3path = d3.geoPath().projection(transform);
 
-      var toLine = d3.svg.line()
-            .interpolate("linear")
-            .x(function(d) {
-                return applyLatLngToLayer(d).x
-            })
-            .y(function(d) {
-                return applyLatLngToLayer(d).y
-            });
 
 
       var ptFeatures = g.selectAll("circle")
-            .data(featuresdata)
+            .data(collection.features)
             .enter()
             .append("circle")
-            .attr("r", 3)
-            .attr("class", "waypoints");
+            .attr("r", 5)
+            .style("fill", "red")
+            .style("opacity", "1");
+            //.attr("class", "waypoints");
 
       var linePath = g.selectAll(".lineConnect")
-            .data([featuresdata])
+            .data([collection.features])
             .enter()
             .append("path")
             .attr("class", "lineConnect");
@@ -86,9 +92,51 @@
       map.on("viewreset", reset);
 
       reset();
-      transition();
+      //transition();
+
+      function projectPoint(x, y) {
+            var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+        }
 
 
+      function applyLatLngToLayer(d) {
+        var y = d.geometry.coordinates[1]
+        var x = d.geometry.coordinates[0]
+        return map.latLngToLayerPoint(new L.LatLng(y, x))
+      }
+
+      function reset() {
+            var bounds = d3path.bounds(collection),
+                topLeft = bounds[0],
+                bottomRight = bounds[1];
+            // here you're setting some styles, width, heigh etc
+            // to the SVG. Note that we're adding a little height and
+            // width because otherwise the bounding box would perfectly
+            // cover our features BUT... since you might be using a big
+            // circle to represent a 1 dimensional point, the circle
+            // might get cut off.
+            
+            
+            ptFeatures.attr("transform",
+                function(d) {
+                    return "translate(" +
+                        applyLatLngToLayer(d).x + "," +
+                        applyLatLngToLayer(d).y + ")";
+                });
+            // again, not best practice, but I'm harding coding
+            // the starting point
+            
+            // Setting the size and location of the overall SVG container
+            svg.attr("width", bottomRight[0] - topLeft[0] + 120)
+                .attr("height", bottomRight[1] - topLeft[1] + 120)
+                .style("left", topLeft[0] - 50 + "px")
+                .style("top", topLeft[1] - 50 + "px");
+            //linePath.attr("d", d3path);
+            //linePath.attr("d", toLine)
+            // ptPath.attr("d", d3path);
+            g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
+        } // end reset
 
 
 
