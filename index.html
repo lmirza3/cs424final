@@ -1,14 +1,74 @@
 <html>
 	<head>
-		<title>A Leaflet map!</title>
+		<title>Unseen Data</title>
+        <link href='http://fonts.googleapis.com/css?family=Josefin+Slab:100,400' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 		<script src="http://d3js.org/d3.v4.min.js" type="text/javascript"></script>
 			<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
 		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 		<style>
-			#map{ width: 900px; height: 500px; }
+            body {
+                font: 16px "Lato", sans-serif;
+                font-weight: 300;
+                color: #d6f5d6;
+                margin: 0px; padding: 0px;
+                background-image: url(always_grey.png);
+            }
+            a {
+                color: #FFF;
+                font-weight: bold;
+                text-decoration: none;
+            }
+            a:hover {
+                color: #666;
+            }
+            .header {
+                margin-top:10px;
+                text-align: center;
+            }
+            
+            .tagline {
+                margin: 0;
+                text-transform: uppercase;
+                font-weight: 600;
+                font-size: 13px;
+            }
+            .interaction {
+                text-align: center;
+                font-size: 11px;
+                font-style: italic;
+            }
+            #product_title {
+                font-family: 'Josefin Slab',Helvetica, Arial, sans-serif;
+                font-size: 2em;
+                font-variant: small-caps;
+                text-transform: uppercase;
+                font-weight: 200;
+                color: #33a02c;
+            }
+            @media (min-width: 990px) {
+                #product_title{
+                    font-size: 3em;
+                }
+                .tagline {
+                    font-size: 11px;
+                }
+            }
+            .dark {
+                font-weight: 800;
+            }
+            
+			#map{ 
+                width: 900px; 
+                height: 500px; 
+                margin: auto;
+                width: 65%;
+            
+            }
 
 			svg {
 				position: relative;
+                padding-bottom: 200;
 			}
 
 			path {
@@ -35,40 +95,60 @@
 			}
 
 			.axis {
-        font: 10px sans-serif;
-        display: none;
-	    }
-	        
-	    #nRadius {
-        position: relative;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 50px;
-        height: auto;
-        width: 48%;  
-	    }
-	        
-	    #nRadius-value {
-		    font-family: sans-serif;
-		    font-weight: bold;
-	    }
-	    label {
-		    font-family:sans-serif;
-		    font-weight: bold;
-	    }
+            font: 10px sans-serif;
+            display: none;
+            }
+
+            #nRadius {
+            position: relative;
+            left: 0;
+            top: 900;
+            right: 0;
+            bottom: 50px;
+            height: auto;
+            margin: auto;
+            width: 48%;  
+            }
+
+            #nRadius-value {
+                font-family: sans-serif;
+                font-weight: bold;
+            }
+            label {
+                position: relative;
+                left: 0;
+                top: 900;
+                margin: auto;
+                font-family:sans-serif;
+                font-weight: bold;
+            }
 
 		</style>
 	</head>
 	<body>
+        <p>
+      <label for="nRadius" 
+             style="display: inline-block; width: 100px; text-align: right">
+             Time: <span id="nRadius-value" style="width:200px">…</span>
+      </label>
+      <input type="range" min="1" max="1262" step="1" id="nRadius">
+    </p>
+        <div class="header">
+            <span id="product_title">
+            <span class="dark">
+                <a href="#/" class="h-link">Silent Communication</a>
+            </span>
+            </span>
+        <p class="tagline">An analysis of various bands of communication data in relation to time and GPS location</p>
+        <p class="interaction">Mouseover to explore, click tool to zoom in.</p>
+  </div>
 
 		<div id="map"></div>
 
 		<script>
 
 			// initialize the map
-			var map = L.map('map').setView([41.8711095, -87.64749043], 18);
-
+			var map = L.map('map').setView([41.87120, -87.648345], 18);
 			// load a tile layer
 			L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZW1lbG8yIiwiYSI6ImNpdzRsejFncjAwNWEyenA1NGJ0YXE3N2UifQ.FySGNTbHiTK-_9_SAMgVcA',
 			{
@@ -127,7 +207,6 @@
 					//console.log(minDB);
 
 					var pi = Math.PI;
-
 
 					d3.json("location.geojson", function(collection) {
 
@@ -229,6 +308,7 @@
 							//console.log(dataAvg[i]);
 							if(dataAvg[i].latitude == lat && dataAvg[i].longitude == long){
 								avgInfo = dataAvg[i];
+                                //console.log(avgInfo);
 								break;
 							}
 							i++;
@@ -251,10 +331,10 @@
 
             // console.log(avgInfo.f700avg);
             var tmpVal = {};
-            tmpVal[0] = {val: avgInfo.f700avg, color: "blue", speed: 5};
-            tmpVal[1] = {val: avgInfo.f850avg, color: "red", speed: 5};
-            tmpVal[2] = {val: avgInfo.f1700avg, color: "green", speed: 5};
-            tmpVal[3] = {val: avgInfo.f1900avg, color: "yellow", speed: 5};
+            tmpVal[0] = {val: avgInfo.f700avg, color: "#4CB5F5", speed: 5};
+            tmpVal[1] = {val: avgInfo.f850avg, color: "B7B8B6", speed: 5};
+            tmpVal[2] = {val: avgInfo.f1700avg, color: "34675C", speed: 5};
+            tmpVal[3] = {val: avgInfo.f1900avg, color: "B3C100", speed: 5};
             // tmpVal[4] = {val: setInfo.f700, color: "blue", speed: 3};
             // tmpVal[5] = {val: setInfo.f850, color: "red", speed: 3};
             // tmpVal[6] = {val: setInfo.f1700, color: "green", speed: 3};
@@ -300,6 +380,107 @@
 				});
 			});
 
+            /*********************************************
+            *********************************************/
+            
+            var margin = {top: 100, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+    //spacing across screen
+    var x = d3.scaleBand()
+    .range([0, width]);
+
+    var y = d3.scaleLinear()
+    .range([height, 0]);
+
+    var xAxis = d3.axisBottom(x);
+    var yAxis = d3.axisLeft(y);
+
+    var canvas = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", 20 + height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.csv("bubbleDataFile.csv", function(error, data) {
+    x.domain(data.map(function(d) { return d.time   ; }));
+    y.domain([0, d3.max(data, function(d) { return d["1"]; })]);
+
+    canvas.append("g")
+    .attr("class", "x axis") 
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis); 
+
+    var colorize = function(d) {
+        if (d.time == "f700") { return "steelblue";} 
+        if (d.time == "f850") { return "orange";} 
+        if (d.time == "f1700") { return "green";} 
+        if (d.time == "f1900") { return "brown";}                           
+    }; 
+    var circles = canvas.selectAll(".circle")
+      .data(data)
+      .enter().append("circle")
+      .attr("class", "circle")
+      .attr("cx", function(d) { return (x(d.time) + 55); }) 
+      .attr("cy", height/5 ) 
+      .attr("height", function(d) { return height - y(d["1"]) ; })
+      .style("fill", colorize)
+
+
+         d3.select("#nRadius").on("input", function() {
+           update(+this.value);
+         });
+
+         // update the elements
+         update(1);
+
+         function update(nRadius) {
+
+           d3.select("#nRadius-value").text(nRadius);
+           var r = d3.select("#nRadius").property("value", nRadius);
+
+           var text = canvas.selectAll("text")
+                         .data(data);
+
+           var objYr = 1;
+           var objYr1 = objYr + 1;
+
+           canvas.selectAll(".circle") 
+            .transition()
+            .duration(200)
+             //.ease("circle")
+
+             .attr("r", function(d) { 
+                 for (i = 0; i <1263 ; i++)  {
+                       if (nRadius == i) {
+                            return (d[i]-69)
+                       }
+                 }        
+              })      
+
+             canvas.selectAll("circles")
+              .data(data)
+              .enter()
+              .append("text")
+              .attr("x", function(d) { return (x(d.time) + 55); })
+              .attr("y", function (d) { return height *0.0001 }) 
+              .attr("text-anchor", "middle")
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "12px")
+              .attr("font-weight", "bold")
+              .attr("fill", "black")
+              .text(function(d)  {
+                  for (i = 0; i < 1263; i++)  {
+                         var theYears = objYr + i
+                         if (nRadius == theYears)   {
+                       return d.time + ", " + d[theYears];
+                    }
+                  }
+               })
+               text.exit().remove();
+         }
+
+    })
 
 
 
