@@ -58,9 +58,21 @@
 					var x = 41.87113567;
 					var y = -87.647697227902;
 
+					var i = 0;
+					var info;
+					while(i < dataAvg.length){
+						//console.log(dataAvg[i]);
+						if(parseFloat(dataAvg[i].latitude) == x && parseFloat(dataAvg[i].longitude) == y){
+							info = dataAvg[i];
+							break;
+						}
+						i++;
+					}
+					console.log(info);
+
 					//sunburst scale
 		            var sunArcScale = d3.scaleLinear()
-		            	.domain([0,12])
+		            	.domain([0,60])
 		            	.range([minDB, maxDB])
 
 					//set svg canvas
@@ -68,18 +80,25 @@
 		            	.attr("width", width)
 		            	.attr("height", height)
 
-		            var group = svg.append("g")
+		            var group = canvas.append("g")
           				.attr("transform", "translate("+ cw +","+ ch +")");
 
-		            var arc = d3.svg.arc()
-			           .innerRadius(50)
-			           .outerRadius(70)
-					   .startAngle(45 * (Math.PI/180)) //converting from degs to radians
-					   .endAngle(3) //just radians
+          			var arc = d3.arc()
+				           .innerRadius(10)
 
-					vis.append("path")
-					   .attr("d", arc)
-					   .attr("transform", "translate(200,200)")
+				           console.log(info.f700avg);
+
+          			//for (i=0; i < 4; i++){
+			            
+						var drawArc = group.append("path")
+							.datum({outerRadius: sunArcScale(info.f700avg)})
+							.datum({startAngle: 0* 90 * (pi/180)})
+							.datum({endAngle: (0+1) * 90 * (pi/180)})
+							.style("fill", "blue")
+							.attr("d", arc);
+						
+					//}
+
 				});
 			});
 

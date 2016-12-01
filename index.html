@@ -76,7 +76,7 @@
 						freq1700 = [],
 						freq1900 = [];
 
-					for (var i=0 in dataSet){
+					dataSet.forEach(function(d){
 						freq700.push(parseFloat(dataSet[i].f700));
 						freq850.push(parseFloat(dataSet[i].f850));
 						freq1700.push(parseFloat(dataSet[i].f1700));
