@@ -68,7 +68,6 @@
 
 			svg {
 				position: relative;
-                padding-bottom: 200;
 			}
 
 			path {
@@ -100,14 +99,15 @@
             }
 
             #nRadius {
-            position: relative;
-            left: 0;
-            top: 900;
+            position: absolute;
+            
+            top: 800;
+            left: 50%;
             right: 0;
             bottom: 50px;
-            height: auto;
             margin: auto;
-            width: 48%;  
+            width: 50%;  
+            transform: translateX(-50%) translateY(-50%);
             }
 
             #nRadius-value {
@@ -115,12 +115,19 @@
                 font-weight: bold;
             }
             label {
-                position: relative;
-                left: 0;
-                top: 900;
-                margin: auto;
-                font-family:sans-serif;
-                font-weight: bold;
+                position: absolute;
+                top: 800;
+                left: 10%;
+                right: 0;
+                bottom: 50px;
+                margin: auto; 
+                transform: translateX(-80%) translateY(-20%);
+            }
+            
+            .canvas { 
+            position: absolute;
+            width: 50%;
+            transform: translateX(-50%) translateY(-50%);
             }
 
 		</style>
@@ -383,104 +390,104 @@
             /*********************************************
             *********************************************/
             
-            var margin = {top: 100, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
-    //spacing across screen
-    var x = d3.scaleBand()
-    .range([0, width]);
+            var margin = {top: 50, right: 20, bottom: 30, left: 400},
+            width = 960 - margin.left - margin.right,
+            height = 120 - margin.top - margin.bottom;
+            //spacing across screen
+            var x = d3.scaleBand()
+            .range([0, width]);
 
-    var y = d3.scaleLinear()
-    .range([height, 0]);
+            var y = d3.scaleLinear()
+            .range([height, 0]);
 
-    var xAxis = d3.axisBottom(x);
-    var yAxis = d3.axisLeft(y);
+            var xAxis = d3.axisBottom(x);
+            var yAxis = d3.axisLeft(y);
 
-    var canvas = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", 20 + height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var canvas = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", 20 + height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    d3.csv("bubbleDataFile.csv", function(error, data) {
-    x.domain(data.map(function(d) { return d.time   ; }));
-    y.domain([0, d3.max(data, function(d) { return d["1"]; })]);
+            d3.csv("bubbleDataFile.csv", function(error, data) {
+            x.domain(data.map(function(d) { return d.time   ; }));
+            y.domain([0, d3.max(data, function(d) { return d["1"]; })]);
 
-    canvas.append("g")
-    .attr("class", "x axis") 
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis); 
+            canvas.append("g")
+            .attr("class", "x axis") 
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis); 
 
-    var colorize = function(d) {
-        if (d.time == "f700") { return "steelblue";} 
-        if (d.time == "f850") { return "orange";} 
-        if (d.time == "f1700") { return "green";} 
-        if (d.time == "f1900") { return "brown";}                           
-    }; 
-    var circles = canvas.selectAll(".circle")
-      .data(data)
-      .enter().append("circle")
-      .attr("class", "circle")
-      .attr("cx", function(d) { return (x(d.time) + 55); }) 
-      .attr("cy", height/5 ) 
-      .attr("height", function(d) { return height - y(d["1"]) ; })
-      .style("fill", colorize)
+            var colorize = function(d) {
+                if (d.time == "f700") { return "#4CB5F5";} 
+                if (d.time == "f850") { return "B7B8B6";} 
+                if (d.time == "f1700") { return "34675C";} 
+                if (d.time == "f1900") { return "B3C100";}                           
+            }; 
 
-
-         d3.select("#nRadius").on("input", function() {
-           update(+this.value);
-         });
-
-         // update the elements
-         update(1);
-
-         function update(nRadius) {
-
-           d3.select("#nRadius-value").text(nRadius);
-           var r = d3.select("#nRadius").property("value", nRadius);
-
-           var text = canvas.selectAll("text")
-                         .data(data);
-
-           var objYr = 1;
-           var objYr1 = objYr + 1;
-
-           canvas.selectAll(".circle") 
-            .transition()
-            .duration(200)
-             //.ease("circle")
-
-             .attr("r", function(d) { 
-                 for (i = 0; i <1263 ; i++)  {
-                       if (nRadius == i) {
-                            return (d[i]-69)
-                       }
-                 }        
-              })      
-
-             canvas.selectAll("circles")
+            var circles = canvas.selectAll(".circle")
               .data(data)
-              .enter()
-              .append("text")
-              .attr("x", function(d) { return (x(d.time) + 55); })
-              .attr("y", function (d) { return height *0.0001 }) 
-              .attr("text-anchor", "middle")
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "12px")
-              .attr("font-weight", "bold")
-              .attr("fill", "black")
-              .text(function(d)  {
-                  for (i = 0; i < 1263; i++)  {
-                         var theYears = objYr + i
-                         if (nRadius == theYears)   {
-                       return d.time + ", " + d[theYears];
-                    }
-                  }
-               })
-               text.exit().remove();
-         }
+              .enter().append("circle")
+              .attr("class", "circle")
+              .attr("cx", function(d) { return (x(d.time) + 55); }) 
+              .attr("cy", height/5 ) 
+              .attr("height", function(d) { return height - y(d["1"]) ; })
+              .style("fill", colorize)
 
-    })
+
+                 d3.select("#nRadius").on("input", function() {
+                   update(+this.value);
+                 });
+
+                 // update the elements
+                 update(1);
+
+                 function update(nRadius) {
+
+                   d3.select("#nRadius-value").text(nRadius);
+                   var r = d3.select("#nRadius").property("value", nRadius);
+
+                   var text = canvas.selectAll("text")
+                                 .data(data);
+
+                   var objYr = 1;
+                   var objYr1 = objYr + 1;
+
+                   canvas.selectAll(".circle") 
+                    .transition()
+                    .duration(200)
+                     //.ease("circle")
+
+                     .attr("r", function(d) { 
+                         for (i = 0; i <1263 ; i++)  {
+                               if (nRadius == i) {
+                                    return (d[i]-69)
+                               }
+                         }        
+                      })      
+
+                     canvas.selectAll("circles")
+                      .data(data)
+                      .enter()
+                      .append("text")
+                      .attr("x", function(d) { return (x(d.time) + 55); })
+                      .attr("y", function (d) { return 60+ height *0.0001 }) 
+                      .attr("text-anchor", "middle")
+                      .attr("font-family", "sans-serif")
+                      .attr("font-size", "14px")
+                      .attr("fill", "white")
+                      .text(function(d)  {
+                          for (i = 0; i < 1263; i++)  {
+                                 var theYears = objYr + i
+                                 if (nRadius == theYears)   {
+                               return d.time + ", " + d[theYears];
+                            }
+                          }
+                       })
+                       text.exit().remove();
+                 }
+
+            })
 
 
 
