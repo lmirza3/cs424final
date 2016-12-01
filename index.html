@@ -43,7 +43,7 @@
 		<script>
 
 			// initialize the map
-			var map = L.map('map').setView([41.8708095, -87.64718043], 18);
+			var map = L.map('map').setView([41.8711095, -87.64749043], 18);
 
 			// load a tile layer
 			L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZW1lbG8yIiwiYSI6ImNpdzRsejFncjAwNWEyenA1NGJ0YXE3N2UifQ.FySGNTbHiTK-_9_SAMgVcA',
@@ -217,38 +217,38 @@
 						// console.log(avgInfo);
 
 						//sunburst scale
-			            var sunArcScale = d3.scaleLinear()
-			            	.domain([minDB, maxDB])
-			            	.range([40, 60])
+            var sunArcScale = d3.scaleLinear()
+            	.domain([minDB, maxDB])
+            	.range([30, 80])
 
 						//set svg canvas
-	            		// var canvas = d3.select("body").append("svg")
-			            // 	.attr("width", width)
-			            // 	.attr("height", height)
+        		// var canvas = d3.select("body").append("svg")
+            // 	.attr("width", width)
+            // 	.attr("height", height)
 
-			            // var group = canvas.append("g")
-	          				// .attr("transform", "translate("+ x +","+ y +")");
+            // var group = canvas.append("g")
+      				// .attr("transform", "translate("+ x +","+ y +")");
 
 
-			            // console.log(avgInfo.f700avg);
-			            var tmpVal = {};
-			            tmpVal[0] = {val: avgInfo.f700avg, color: "blue", speed: 5};
-			            tmpVal[1] = {val: avgInfo.f850avg, color: "red", speed: 5};
-			            tmpVal[2] = {val: avgInfo.f1700avg, color: "green", speed: 5};
-			            tmpVal[3] = {val: avgInfo.f1900avg, color: "yellow", speed: 5};
-			            // tmpVal[4] = {val: setInfo.f700, color: "blue", speed: 3};
-			            // tmpVal[5] = {val: setInfo.f850, color: "red", speed: 3};
-			            // tmpVal[6] = {val: setInfo.f1700, color: "green", speed: 3};
-			            // tmpVal[7] = {val: setInfo.f1900, color: "yellow", speed: 3};
-			         
-	          			for (i=0; i < 4; i++){
+            // console.log(avgInfo.f700avg);
+            var tmpVal = {};
+            tmpVal[0] = {val: avgInfo.f700avg, color: "blue", speed: 5};
+            tmpVal[1] = {val: avgInfo.f850avg, color: "red", speed: 5};
+            tmpVal[2] = {val: avgInfo.f1700avg, color: "green", speed: 5};
+            tmpVal[3] = {val: avgInfo.f1900avg, color: "yellow", speed: 5};
+            // tmpVal[4] = {val: setInfo.f700, color: "blue", speed: 3};
+            // tmpVal[5] = {val: setInfo.f850, color: "red", speed: 3};
+            // tmpVal[6] = {val: setInfo.f1700, color: "green", speed: 3};
+            // tmpVal[7] = {val: setInfo.f1900, color: "yellow", speed: 3};
+         
+      			for (i=0; i < 4; i++){
 
-				            var arc = d3.arc()
-		          				.innerRadius(40)
-		          				.outerRadius((sunArcScale(tmpVal[i].val)))
-		          				.startAngle(i * 90 * (pi/180))
-		          				.endAngle((i+1) * 90 * (pi/180))
-		          				.padAngle(5*(pi/180))
+	            var arc = d3.arc()
+        				.innerRadius(30)
+        				.outerRadius((sunArcScale(tmpVal[i].val)))
+        				.startAngle(i * 90 * (pi/180))
+        				.endAngle((i+1) * 90 * (pi/180))
+        				.padAngle(5*(pi/180))
 
 							var drawArc = g.append("path")
 								.style("fill", tmpVal[i].color)
@@ -262,7 +262,7 @@
 							
 						}
 
-	          			var t0 = Date.now();
+      			var t0 = Date.now();
 
 						d3.timer(function(){
 							var delta = (Date.now() - t0);
