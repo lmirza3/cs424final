@@ -1,10 +1,31 @@
 <html>
 <head>
   <title>A Leaflet map!</title>
+  <script src="http://d3js.org/d3.v4.min.js" type="text/javascript"></script>
+
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   <style>
     #map{ width: 900px; height: 500px; }
+
+    svg {
+        position: relative;
+    }
+
+    path {
+        fill: yellow;
+        stroke-width: 2px;
+        stroke: red;
+        stroke-opacity: 1;
+    }
+
+    .travelMarker {
+        fill: yellow;
+        opacity: 0.75;
+    }
+
+
+
   </style>
 </head>
 <body>
@@ -14,15 +35,70 @@
   <script>
 
   // initialize the map
-  var map = L.map('map').setView([41.87, -87.64], 13);
+  var map = L.map('map').setView([41.8708095, -87.64718043], 17);
 
   // load a tile layer
-  L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZW1lbG8yIiwiYSI6ImNpdzRsejFncjAwNWEyenA1NGJ0YXE3N2UifQ.FySGNTbHiTK-_9_SAMgVcA',
+  L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZW1lbG8yIiwiYSI6ImNpdzRsejFncjAwNWEyenA1NGJ0YXE3N2UifQ.FySGNTbHiTK-_9_SAMgVcA',
     {
       attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-      maxZoom: 17,
-      minZoom: 9
+      maxZoom: 50,
+      minZoom: 13
     }).addTo(map);
+
+  var svg = d3.select(map.getPanes().overlayPane).append("svg");
+  var g = svg.append("g").attr("class", "leaflet-zoom-hide");
+      d3.json("location.geojson", function(collection) {
+      var transform = d3.geo.transform({
+        point: projectPoint
+      });
+
+      var d3path = d3.geo.path().projection(transform);
+
+      var toLine = d3.svg.line()
+            .interpolate("linear")
+            .x(function(d) {
+                return applyLatLngToLayer(d).x
+            })
+            .y(function(d) {
+                return applyLatLngToLayer(d).y
+            });
+
+
+      var ptFeatures = g.selectAll("circle")
+            .data(featuresdata)
+            .enter()
+            .append("circle")
+            .attr("r", 3)
+            .attr("class", "waypoints");
+
+      var linePath = g.selectAll(".lineConnect")
+            .data([featuresdata])
+            .enter()
+            .append("path")
+            .attr("class", "lineConnect");
+
+
+      var marker = g.append("circle")
+            .attr("r", 10)
+            .attr("id", "marker")
+            .attr("class", "travelMarker");
+
+      map.on("viewreset", reset);
+
+      reset();
+      transition();
+
+
+
+
+
+
+
+
+  });
+
+
+
 
   </script>
 </body>
