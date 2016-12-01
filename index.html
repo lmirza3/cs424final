@@ -43,7 +43,7 @@
 		<script>
 
 			// initialize the map
-			var map = L.map('map').setView([41.8708095, -87.64718043], 17);
+			var map = L.map('map').setView([41.8708095, -87.64718043], 18);
 
 			// load a tile layer
 			L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZW1lbG8yIiwiYSI6ImNpdzRsejFncjAwNWEyenA1NGJ0YXE3N2UifQ.FySGNTbHiTK-_9_SAMgVcA',
@@ -77,11 +77,11 @@
 						freq1900 = [];
 
 					dataSet.forEach(function(d){
-						freq700.push(parseFloat(dataSet[i].f700));
-						freq850.push(parseFloat(dataSet[i].f850));
-						freq1700.push(parseFloat(dataSet[i].f1700));
-						freq1900.push(parseFloat(dataSet[i].f1900));
-					}
+						freq700.push(parseFloat(d.f700));
+						freq850.push(parseFloat(d.f850));
+						freq1700.push(parseFloat(d.f1700));
+						freq1900.push(parseFloat(d.f1900));
+					});
 					//popping the end element, because object column gets parsed in
 					freq700.pop();
 					freq850.pop();
@@ -102,6 +102,8 @@
 					//console.log(maxDB);
 					//console.log(minDB);
 
+					var pi = Math.PI;
+
 
 					d3.json("location.geojson", function(collection) {
 
@@ -111,16 +113,16 @@
 
 						var d3path = d3.geoPath().projection(transform);
 
-
-
 						var ptFeatures = g.selectAll("circle")
 							.data(collection.features)
 							.enter()
 							.append("circle")
 							.attr("r", 5)
 							.style("fill", "red")
-							.style("opacity", "1");
+							.style("opacity", "1")
 							//.attr("class", "waypoints");
+							.on("mouseover", handleMouseOver)
+							.on("mouseout", handleMouseOut);
 
 						var marker = g.append("circle")
 							.attr("r", 10)
@@ -174,9 +176,106 @@
 							//linePath.attr("d", toLine)
 							// ptPath.attr("d", d3path);
 							g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
+						
 						} // end reset
 
-						
+						function handleMouseOver(d){
+							var transform = d3.select(this).attr("transform");
+							var comma = transform.indexOf(",");
+							var openP = transform.indexOf("(");
+							var closeP = transform.indexOf(")");
+
+							var x = Number(transform.slice(openP + 1, comma));
+							var y = Number(transform.slice(comma + 1, closeP));
+
+							// console.log(d.geometry.coordinates[1]);
+
+							sunburst(x, y, d.geometry.coordinates[1], d.geometry.coordinates[0]);
+						}
+
+						function handleMouseOut(){
+							d3.selectAll(".spin1").remove();
+
+						}
+
+						function sunburst(x, y, lat, long){
+
+						// console.log(x);
+						// console.log(y);
+						// console.log(lat);
+
+						var i = 0;
+						var avgInfo;
+						while(i < dataAvg.length){
+							//console.log(dataAvg[i]);
+							if(dataAvg[i].latitude == lat && dataAvg[i].longitude == long){
+								avgInfo = dataAvg[i];
+								break;
+							}
+							i++;
+						}
+						// console.log(avgInfo);
+
+						//sunburst scale
+			            var sunArcScale = d3.scaleLinear()
+			            	.domain([minDB, maxDB])
+			            	.range([40, 60])
+
+						//set svg canvas
+	            		// var canvas = d3.select("body").append("svg")
+			            // 	.attr("width", width)
+			            // 	.attr("height", height)
+
+			            // var group = canvas.append("g")
+	          				// .attr("transform", "translate("+ x +","+ y +")");
+
+
+			            // console.log(avgInfo.f700avg);
+			            var tmpVal = {};
+			            tmpVal[0] = {val: avgInfo.f700avg, color: "blue", speed: 5};
+			            tmpVal[1] = {val: avgInfo.f850avg, color: "red", speed: 5};
+			            tmpVal[2] = {val: avgInfo.f1700avg, color: "green", speed: 5};
+			            tmpVal[3] = {val: avgInfo.f1900avg, color: "yellow", speed: 5};
+			            // tmpVal[4] = {val: setInfo.f700, color: "blue", speed: 3};
+			            // tmpVal[5] = {val: setInfo.f850, color: "red", speed: 3};
+			            // tmpVal[6] = {val: setInfo.f1700, color: "green", speed: 3};
+			            // tmpVal[7] = {val: setInfo.f1900, color: "yellow", speed: 3};
+			         
+	          			for (i=0; i < 4; i++){
+
+				            var arc = d3.arc()
+		          				.innerRadius(40)
+		          				.outerRadius((sunArcScale(tmpVal[i].val)))
+		          				.startAngle(i * 90 * (pi/180))
+		          				.endAngle((i+1) * 90 * (pi/180))
+		          				.padAngle(5*(pi/180))
+
+							var drawArc = g.append("path")
+								.style("fill", tmpVal[i].color)
+								.style("opacity", .6)
+								.style("stroke", "none")
+								.attr("d", arc)
+								.attr("class", "spin1")
+								.attr("transform", "translate("+ x +","+ y +")");
+							
+
+							
+						}
+
+	          			var t0 = Date.now();
+
+						d3.timer(function(){
+							var delta = (Date.now() - t0);
+							g.selectAll(".spin1")
+								.attr("transform", function(d){
+									return "translate("+ x +","+ y +") rotate(" + 100 + delta * 7/200 + ")";
+								});
+							// group.selectAll(".spin2")
+							// 	.attr("transform", function(d){
+							// 		return "rotate(" + 100 + delta * 4/200 + ")";
+							// 	});
+						});
+					}
 
 					});
 				});
