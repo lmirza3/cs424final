@@ -111,12 +111,12 @@
             }
 
             #nRadius-value {
-                font-family: sans-serif;
+                font-family: "Lato";
                 font-weight: bold;
             }
             label {
                 position: absolute;
-                top: 650;
+                top: 655;
                 left: 10%;
                 right: 0;
                 bottom: 50px;
@@ -130,7 +130,7 @@
         <p>
       <label for="nRadius" 
              style="display: inline-block; width: 100px; text-align: right">
-             Time: <span id="nRadius-value" style="width:200px">…</span>
+             Time: <span id="nRadius-value" style="width:200">…</span>
       </label>
       <input type="range" min="1" max="1262" step="1" id="nRadius">
     </p>
@@ -468,7 +468,7 @@
                       .attr("x", function(d) { return (x(d.time) + 55); })
                       .attr("y", function (d) { return 60+ height *0.0001 }) 
                       .attr("text-anchor", "middle")
-                      .attr("font-family", "sans-serif")
+                      .attr("font-family", "Lato")
                       .attr("font-size", "14px")
                       .attr("fill", "white")
                       .text(function(d)  {
