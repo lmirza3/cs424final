@@ -67,34 +67,22 @@
             }
 
 			svg {
-			position: relative;
+				position: relative;
 			}
 
 			path {
-			fill: yellow;
-			stroke-width: 2px;
-			stroke: red;
-			stroke-opacity: 1;
+				fill: yellow;
+				stroke-width: 2px;
+				stroke: red;
+				stroke-opacity: 1;
 			}
 
 			.waypoints {
-			fill: red;
-			opacity: 1;
+				fill: red;
+				opacity: 1;
 			}
 
-			.lineConnect {
-			fill: none;
-			stroke: black;
-			opacity: 1;
-			}
 
-			.travelMarker {
-			fill: yellow;
-			opacity: 0.75;
-			}
-
-<<<<<<< HEAD
-=======
 			.axis {
             font: 10px sans-serif;
             display: none;
@@ -126,7 +114,6 @@
                 transform: translateX(-80%) translateY(-20%);
             }
             
->>>>>>> 2b4c83a79c940c173cb57f70fc0d07b6124e7a60
 		</style>
 	</head>
 	<body>
@@ -224,22 +211,23 @@
 							.data(collection.features)
 							.enter()
 							.append("circle")
-							.attr("r", 5)
-							.style("fill", "red")
-							.style("opacity", "1")
+							.attr("r", 2)
+							.style("fill", "#88b281")
+							.style("opacity", ".7")
 							//.attr("class", "waypoints");
 							.on("mouseover", handleMouseOver)
 							.on("mouseout", handleMouseOut);
 
-						var marker = g.append("circle")
-							.attr("r", 10)
-							.attr("id", "marker")
-							.attr("class", "travelMarker");
+            var marker = g.append("circle")
+            .attr("r", 10)
+            .attr("fill", "red");
 
 						map.on("viewreset", reset);
 
 						reset();
+            
 						//transition();
+
 
 						function projectPoint(x, y) {
 							var point = map.latLngToLayerPoint(new L.LatLng(y, x));
@@ -257,22 +245,15 @@
 							var bounds = d3path.bounds(collection),
 							topLeft = bounds[0],
 							bottomRight = bounds[1];
-							// here you're setting some styles, width, heigh etc
-							// to the SVG. Note that we're adding a little height and
-							// width because otherwise the bounding box would perfectly
-							// cover our features BUT... since you might be using a big
-							// circle to represent a 1 dimensional point, the circle
-							// might get cut off.
-
-
+				
 							ptFeatures.attr("transform",
 							function(d) {
 								return "translate(" +
 								applyLatLngToLayer(d).x + "," +
 								applyLatLngToLayer(d).y + ")";
 							});
-							// again, not best practice, but I'm harding coding
-							// the starting point
+							
+              getLoc();
 
 							// Setting the size and location of the overall SVG container
 							svg.attr("width", bottomRight[0] - topLeft[0] + 120)
@@ -302,9 +283,47 @@
 							sunburst(x, y, d.geometry.coordinates[1], d.geometry.coordinates[0]);
 						}
 
+
+
 						function handleMouseOut(){
 
 						}
+
+            dataSet.forEach(function(d){
+            freq700.push(parseFloat(d.f700));
+            freq850.push(parseFloat(d.f850));
+            freq1700.push(parseFloat(d.f1700));
+            freq1900.push(parseFloat(d.f1900));
+          });
+
+            function getLoc(){
+
+              marker
+                    .transition()
+                    .duration(200)
+                     .attr("r", 10)
+                     .style("fill", "red")
+                     .attr("transform",  function() { 
+                         for (i = 0; i <1263 ; i++)  {
+                               if (thisTime == i) {
+                                  dataSet.forEach(function(t){
+                                  if(thisTime == t.time){
+                                    var y = t.longitude;
+                                    var x = t.latitude;
+                                    console.log(thisTime);
+                                                         return "translate(" +
+                        map.latLngToLayerPoint(new L.LatLng(y, x)).x + "," +
+                        map.latLngToLayerPoint(new L.LatLng(y, x)).y + ")";
+                                     }
+                                    });
+                                    
+                               }
+                         }        
+                      });
+                     
+
+
+            }
 
 						function sunburst(x, y, lat, long){
 
@@ -392,6 +411,9 @@
 
             /*********************************************
             *********************************************/
+            var thisTime ;
+            var hey;
+            
             
             var margin = {top: 50, right: 20, bottom: 30, left: 400},
             width = 960 - margin.left - margin.right,
@@ -446,10 +468,10 @@
                  update(1);
 
                  function update(nRadius) {
-
+                  //hey = 1;
                    d3.select("#nRadius-value").text(nRadius);
-                   var r = d3.select("#nRadius").property("value", nRadius);
-
+                   d3.select("#nRadius").property("value", nRadius);
+                  thisTime = nRadius;
                    var text = canvas.selectAll("text")
                                  .data(data);
 
