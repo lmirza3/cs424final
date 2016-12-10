@@ -59,8 +59,8 @@
             }
             
 			#map{ 
-                width: 900px; 
-                height: 400px; 
+                width: 800px; 
+                height: 300px; 
                 margin: auto;
                 width: 65%;
             
@@ -101,7 +101,7 @@
             #nRadius {
             position: absolute;
             
-            top: 650;
+            top: 590;
             left: 50%;
             right: 0;
             bottom: 50px;
@@ -116,12 +116,22 @@
             }
             label {
                 position: absolute;
-                top: 655;
+                top: 610;
                 left: 10%;
                 right: 0;
                 bottom: 50px;
                 margin: auto; 
                 transform: translateX(-80%) translateY(-20%);
+            }
+            .container2{
+              float: right;
+              width: 500px;
+            }
+            .container{
+              left:10%;
+              margin-left: 100px;
+              float:left;
+              width: calc(100% - 800px);
             }
             
 		</style>
@@ -145,16 +155,18 @@
          </div>
 
 		<div id="map"></div>
+    <div class="container" id="circless"></div>
+    <div class="container2" id="legend"></div>
 
 		<script>
 
 			// initialize the map
-			var map = L.map('map').setView([41.87120, -87.648345], 18);
+			var map = L.map('map').setView([41.87120, -87.648345], 17);
 			// load a tile layer
 			L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZW1lbG8yIiwiYSI6ImNpdzRsejFncjAwNWEyenA1NGJ0YXE3N2UifQ.FySGNTbHiTK-_9_SAMgVcA',
 			{
 			attribution: 'Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
-			maxZoom: 50,
+			maxZoom: 60,
 			minZoom: 13
 			}).addTo(map);
 
@@ -385,8 +397,8 @@
             /*********************************************
             *********************************************/
             
-            var margin = {top: 50, right: 20, bottom: 30, left: 400},
-            width = 960 - margin.left - margin.right,
+            var margin = {top: 50, right: 20, bottom: 30, left: 100},
+            width = 800 - margin.left - margin.right,
             height = 120 - margin.top - margin.bottom;
             //spacing across screen
             var x = d3.scaleBand()
@@ -398,7 +410,7 @@
             var xAxis = d3.axisBottom(x);
             var yAxis = d3.axisLeft(y);
 
-            var canvas = d3.select("body").append("svg")
+            var canvas = d3.select("#circless").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", 20 + height + margin.top + margin.bottom)
             .append("g")
@@ -419,11 +431,11 @@
                 var colorDomain = [1,2,3, 4];
 
 
-            var width1 = 360;
-            var height1 = 360;
+            var width1 = 800;
+            var height1 = 140;
 
 
-            var svg = d3.select("body")
+            var svg = d3.select("#legend")
               .append('svg')
               .attr('width', width1)
               .attr('height', height1)
@@ -438,7 +450,7 @@
             var ls_w = 20, ls_h = 25;
 
             legend.append("rect")
-              .attr("x", 5)
+              .attr("x", 40)
               .attr("y", function(d,i){ return height1 - (i*ls_h) - 2*ls_h;})
               .attr("width", ls_w)
               .attr("height", ls_h)
@@ -446,8 +458,11 @@
               .style("opacity", 0.8);
 
             legend.append("text")
-              .attr("x", 50)
+              .attr("x", 80)
               .attr("y", function(d, i){ return height1 - (i*ls_h) - ls_h - 4;})
+              .attr("font-family", "Lato")
+              .attr("font-size", "16px")
+              .attr("fill", "white")
               .text(function(d, i){ return legendLabels[i]; });
 
 
