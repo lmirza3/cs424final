@@ -413,6 +413,45 @@
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis); 
 
+            var color = d3.scaleOrdinal()
+                .range(["B3C100","34675C","B7B8B6","#4CB5F5"]);
+            var legendLabels = ["4G: ATT/Verizon/TMobile" , "3G: ATT/Verizon , 4G: Sprint" , "3G: TMobile, 4G: ATT/Verizon/TMobile","3G: All, 4G: All"];
+                var colorDomain = [1,2,3, 4];
+
+
+            var width1 = 360;
+            var height1 = 360;
+
+
+            var svg = d3.select("body")
+              .append('svg')
+              .attr('width', width1)
+              .attr('height', height1)
+              .append('g')
+          //.attr('transform', 'translate(,360/2)');
+
+            var legend = svg.selectAll("g.legend")
+              .data(colorDomain)
+              .enter().append("g")
+              .attr("class", "legend");
+
+            var ls_w = 20, ls_h = 25;
+
+            legend.append("rect")
+              .attr("x", 5)
+              .attr("y", function(d,i){ return height1 - (i*ls_h) - 2*ls_h;})
+              .attr("width", ls_w)
+              .attr("height", ls_h)
+              .style("fill", function(d) { return color(d); })
+              .style("opacity", 0.8);
+
+            legend.append("text")
+              .attr("x", 50)
+              .attr("y", function(d, i){ return height1 - (i*ls_h) - ls_h - 4;})
+              .text(function(d, i){ return legendLabels[i]; });
+
+
+
             var colorize = function(d) {
                 if (d.time == "f700") { return "#4CB5F5";} 
                 if (d.time == "f850") { return "B7B8B6";} 
@@ -475,7 +514,7 @@
                           for (i = 0; i < 1263; i++)  {
                                  var theYears = objYr + i
                                  if (nRadius == theYears)   {
-                               return d.time + ", " + d[theYears];
+                               return d.time + ",  " + d[theYears] + "dB";
                             }
                           }
                        })

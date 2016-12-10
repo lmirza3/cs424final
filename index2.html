@@ -253,7 +253,11 @@
 								applyLatLngToLayer(d).y + ")";
 							});
 							
-              getLoc();
+              getLoc(1);
+
+              d3.select("#nRadius").on("input", function() {
+    getLoc(+this.value);
+    });
 
 							// Setting the size and location of the overall SVG container
 							svg.attr("width", bottomRight[0] - topLeft[0] + 120)
@@ -474,7 +478,7 @@
                   thisTime = nRadius;
                    var text = canvas.selectAll("text")
                                  .data(data);
-
+//console.log(thisTime);
                    var objYr = 1;
                    var objYr1 = objYr + 1;
 
