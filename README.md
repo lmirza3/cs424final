@@ -1,4 +1,4 @@
-# cs424final
+﻿# cs424final
 
 Project 3: Communication Data
 
@@ -38,9 +38,9 @@ Video link:
 
 - Lubna Mirza was responsible for the circle display, 
 - Stephanie Melo was responsible for the map, legend and Readme, 
-- Jae Jeon was responsible with the mouseover on the map, sunburst and video and 
+- Jae Jeon was responsible with the mouseover on the map, sunburst and video 
 - Anthony Zuluaga was responsible for the short paper.
 
 Short Paper link:
 
-
+https://drive.google.com/drive/u/1/folders/0Bzxov3jj0uRhUk5rdjgzY3BWcGM
